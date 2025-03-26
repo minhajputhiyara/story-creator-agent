@@ -1,6 +1,6 @@
-# Website Builder CoAgents Shared State Example
+# Story Creator CoAgents Shared State Example
 
-This example demonstrates how to share state between the agent and the UI for a website builder application that generates HTML and CSS code.
+This example demonstrates how to share state between the agent and the UI for a story creator application that generates HTML and CSS code.
 
 **These instructions assume you are in the `coagents-shared-state/` directory**
 
@@ -49,25 +49,18 @@ Then, run the Next.js project:
 pnpm run dev
 ```
 
-## Using the Website Builder
+## Using the Story Creator
 
-1. Enter a description of the website you want to create in the text area
-2. Click "Generate Website" to have the AI create HTML and CSS code based on your description
-3. View the generated code in the HTML and CSS panels
-4. Click "Preview Website" to see a live preview of your generated website
-5. You can modify your description and generate a new website as many times as you like
+1. Enter a description of the story you want to create in the text area
+2. Click "Generate Story" to have the AI create stories.
+3. View the generated code story in the text area
+4. You can modify your description and generate a new story as many times as you like
+5. accept or reject the change .
 
-The website builder uses GPT-4o to generate clean, responsive, and modern website code based on your text descriptions.
+The story creator uses GPT-4o to generate clean, responsive, and modern story code based on your text descriptions.
 
 # LangGraph Studio
 
 Run LangGraph studio, then load the `./agent` folder into it.
 
 Make sure to create the `.env` mentioned above first!
-
-# Troubleshooting
-
-A few things to try if you are running into trouble:
-
-1. Make sure there is no other local application server running on the 8000 port.
-2. Under `/agent/translate_agent/demo.py`, change `0.0.0.0` to `127.0.0.1` or to `localhost`
