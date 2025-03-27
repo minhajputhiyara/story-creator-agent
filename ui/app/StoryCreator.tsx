@@ -4,6 +4,7 @@ import { useCoAgent, useCopilotChat, useLangGraphInterrupt } from "@copilotkit/r
 import { CopilotSidebar } from "@copilotkit/react-ui";
 import { MessageRole, TextMessage } from "@copilotkit/runtime-client-gql";
 import { useState, useEffect } from "react";
+import { AnswerMarkdown } from "../components/AnswerMarkdown";
 
 interface StoryCreatorAgentState {
   input: string;
@@ -72,7 +73,7 @@ export function StoryCreator() {
           <div className="flex items-center justify-between">
             <input
               type="text"
-              value={storyCreatorAgentState.story_content.title}
+              value={storyCreatorAgentState?.story_content?.title || ""}
               readOnly
               className="w-full text-3xl font-bold bg-transparent border-none focus:outline-none mb-2"
               placeholder="Title"
@@ -94,7 +95,7 @@ export function StoryCreator() {
             )}
           </div>
           <div className="text-sm text-gray-500">
-            Genre: {storyCreatorAgentState.story_content.genre}
+            Genre: {storyCreatorAgentState?.story_content?.genre || ""}
           </div>
           
           <div className="prose max-w-none">
@@ -103,11 +104,7 @@ export function StoryCreator() {
             </div>
 
             <div className="text-gray-700 leading-relaxed">
-              {storyCreatorAgentState.story_content.story.split('\n\n').map((paragraph, index) => (
-                <p key={index} className="mb-4">
-                  {paragraph}
-                </p>
-              ))}
+              <AnswerMarkdown markdown={storyCreatorAgentState?.story_content?.story} />
             </div>
           </div>
         </div>

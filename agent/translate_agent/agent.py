@@ -43,7 +43,7 @@ async def story_creator_node(state: AgentState, config: RunnableConfig):
         emit_intermediate_state=[
             {
                 "state_key": "story_content",
-                "tool": "story_creator"
+                "tool": "StoryContent"
             }
         ]
     )
