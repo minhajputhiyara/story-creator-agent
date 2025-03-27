@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Git-like diff styling */
+.deleted {
+  background-color: #ffcccc !important;
+  color: #990000 !important;
+  text-decoration: line-through !important;
+}
+
+.added {
+  background-color: #ccffcc !important;
+  color: #006600 !important;
+}

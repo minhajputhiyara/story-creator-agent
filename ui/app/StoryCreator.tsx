@@ -22,6 +22,7 @@ interface StoryCreatorAgentState {
   } | null;
   pending_confirmation?: boolean;
   is_edit?: boolean;
+  diff_markup?: string;
 }
 
 export function StoryCreator() {
@@ -99,12 +100,18 @@ export function StoryCreator() {
           </div>
           
           <div className="prose max-w-none">
-            <div className="text-gray-700 mb-8">
+            {/* <div className="text-gray-700 mb-8">
               {storyCreatorAgentState.story_content.summary}
-            </div>
+            </div> */}
 
             <div className="text-gray-700 leading-relaxed">
-              <AnswerMarkdown markdown={storyCreatorAgentState?.story_content?.story} />
+              
+              <AnswerMarkdown 
+                markdown={storyCreatorAgentState?.story_content?.story} 
+                diffMarkup={storyCreatorAgentState?.diff_markup}
+                isEdit={storyCreatorAgentState?.is_edit}
+                pendingConfirmation={storyCreatorAgentState?.pending_confirmation}
+              />
             </div>
           </div>
         </div>
