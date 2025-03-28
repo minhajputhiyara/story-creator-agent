@@ -5,6 +5,8 @@ import { CopilotSidebar } from "@copilotkit/react-ui";
 import { MessageRole, TextMessage } from "@copilotkit/runtime-client-gql";
 import { useState, useEffect } from "react";
 import { AnswerMarkdown } from "../components/AnswerMarkdown";
+import { useMemo } from 'react';
+
 
 interface StoryCreatorAgentState {
   input: string;
@@ -83,73 +85,101 @@ useEffect(() => {
     i++;
 
     if (i >= maxSteps) clearInterval(interval);
-  }, 80); // Tune speed here
+  }, 35); // Tune speed here
 
   return () => clearInterval(interval);
 }, [storyCreatorAgentState.story_content?.story]);
 
+function getDiffWordMap(diffMarkup: string): Record<string, 'added' | 'deleted'> {
+  const map: Record<string, 'added' | 'deleted'> = {};
 
+  const addedRegex = /<span class="added">(.*?)<\/span>/g;
+  const deletedRegex = /<span class="deleted">(.*?)<\/span>/g;
 
-  const renderContent = () => {
-    // Check if story_content is null or undefined
-    if (!storyCreatorAgentState.story_content) {
-      return (
-        <div className="h-screen flex items-center justify-center text-gray-400 text-lg font-light">
-          Your content will appear here...
-        </div>
-      );
-    }
+  let match;
+  while ((match = addedRegex.exec(diffMarkup)) !== null) {
+    const word = match[1].trim();
+    if (word) map[word] = 'added';
+  }
 
+  while ((match = deletedRegex.exec(diffMarkup)) !== null) {
+    const word = match[1].trim();
+    if (word) map[word] = 'deleted';
+  }
+
+  return map;
+}
+
+const renderContent = () => {
+  const { story_content, is_edit, pending_confirmation, diff_markup } = storyCreatorAgentState;
+
+  const diffWordMap = useMemo(() => {
+    if (!diff_markup) return {};
+    return getDiffWordMap(diff_markup);
+  }, [diff_markup]);
+
+  // Check if story_content is null or undefined
+  if (!story_content) {
     return (
-      <div className="max-w-4xl mx-auto py-8 px-4">
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <input
-              type="text"
-              value={storyCreatorAgentState?.story_content?.title || ""}
-              readOnly
-              className="w-full text-3xl font-bold bg-transparent border-none focus:outline-none mb-2"
-              placeholder="Title"
-            />
-            {storyCreatorAgentState.pending_confirmation ? (
-              storyCreatorAgentState.is_edit ? (
-                <div className="text-sm text-purple-600 font-medium px-3 py-1 bg-purple-100 rounded-full">
-                  Awaiting edit confirmation
-                </div>
-              ) : (
-                <div className="text-sm text-amber-600 font-medium px-3 py-1 bg-amber-100 rounded-full">
-                  Awaiting confirmation
-                </div>
-              )
-            ) : (
-              <div className="text-sm text-blue-600 font-medium px-3 py-1 bg-blue-100 rounded-full">
-                Final version
-              </div>
-            )}
-          </div>
-          <div className="text-sm text-gray-500">
-            Genre: {storyCreatorAgentState?.story_content?.genre || ""}
-          </div>
-          
-          <div className="prose max-w-none">
-            {/* <div className="text-gray-700 mb-8">
-              {storyCreatorAgentState.story_content.summary}
-            </div> */}
+      <div className="h-screen flex items-center justify-center text-gray-400 text-lg font-light">
+        Your content will appear here...
+      </div>
+    );
+  }
 
-            <div className="text-gray-700 leading-relaxed">
-            <div className="flex flex-wrap gap-1 text-gray-700 leading-relaxed">
-            {displayedWords.map((word, i) => (
-              <span key={i} className="transition-opacity duration-150">
-                {word}
-              </span>
-            ))}
+  return (
+    <div className="max-w-4xl mx-auto py-8 px-4">
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <input
+            type="text"
+            value={story_content.title || ""}
+            readOnly
+            className="w-full text-3xl font-bold bg-transparent border-none focus:outline-none mb-2"
+            placeholder="Title"
+          />
+          {pending_confirmation ? (
+            is_edit ? (
+              <div className="text-sm text-purple-600 font-medium px-3 py-1 bg-purple-100 rounded-full">
+                Awaiting edit confirmation
+              </div>
+            ) : (
+              <div className="text-sm text-amber-600 font-medium px-3 py-1 bg-amber-100 rounded-full">
+                Awaiting confirmation
+              </div>
+            )
+          ) : (
+            <div className="text-sm text-blue-600 font-medium px-3 py-1 bg-blue-100 rounded-full">
+              Final version
             </div>
-            </div>
+          )}
+        </div>
+
+        <div className="text-sm text-gray-500">
+          Genre: {story_content.genre || ""}
+        </div>
+
+        <div className="prose max-w-none">
+          <div className="flex flex-wrap gap-1 text-gray-700 leading-relaxed">
+            {displayedWords.map((word, i) => {
+              const status = diffWordMap[word];
+              let className = "transition-opacity duration-100";
+
+              if (status === 'added') className += " bg-green-200";
+              else if (status === 'deleted') className += " bg-red-200 line-through";
+
+              return (
+                <span key={i} className={className}>
+                  {word}
+                </span>
+              );
+            })}
           </div>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
   return (
     <div className="flex min-h-screen bg-white">
