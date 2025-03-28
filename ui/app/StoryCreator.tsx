@@ -58,6 +58,38 @@ export function StoryCreator() {
     ),
   });
 
+  const [displayedWords, setDisplayedWords] = useState<string[]>([]);
+const [animationIndex, setAnimationIndex] = useState(0);
+
+useEffect(() => {
+  const oldStory = storyCreatorAgentState.previous_story_content?.story || "";
+  const newStory = storyCreatorAgentState.story_content?.story || "";
+
+  const oldWords = oldStory.split(" ");
+  const newWords = newStory.split(" ");
+
+  let i = 0;
+  const maxSteps = Math.max(oldWords.length, newWords.length);
+
+  const interval = setInterval(() => {
+    const nextWords = [
+      ...newWords.slice(0, i + 1),
+      ...oldWords.slice(i + 1), // Optional: tail from old for transition effect
+    ].slice(0, maxSteps); // Clamp length
+
+    setDisplayedWords(nextWords);
+    setAnimationIndex(i);
+
+    i++;
+
+    if (i >= maxSteps) clearInterval(interval);
+  }, 80); // Tune speed here
+
+  return () => clearInterval(interval);
+}, [storyCreatorAgentState.story_content?.story]);
+
+
+
   const renderContent = () => {
     // Check if story_content is null or undefined
     if (!storyCreatorAgentState.story_content) {
@@ -105,13 +137,13 @@ export function StoryCreator() {
             </div> */}
 
             <div className="text-gray-700 leading-relaxed">
-              
-              <AnswerMarkdown 
-                markdown={storyCreatorAgentState?.story_content?.story} 
-                diffMarkup={storyCreatorAgentState?.diff_markup}
-                isEdit={storyCreatorAgentState?.is_edit}
-                pendingConfirmation={storyCreatorAgentState?.pending_confirmation}
-              />
+            <div className="flex flex-wrap gap-1 text-gray-700 leading-relaxed">
+            {displayedWords.map((word, i) => (
+              <span key={i} className="transition-opacity duration-150">
+                {word}
+              </span>
+            ))}
+            </div>
             </div>
           </div>
         </div>
