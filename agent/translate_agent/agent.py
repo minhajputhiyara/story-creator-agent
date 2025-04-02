@@ -272,7 +272,7 @@ async def story_creator_node(state: AgentState, config: RunnableConfig):
             "story_content": story_content,
             "previous_story_content": story_content,  # Initialize the previous version to be the same as the current
             "pending_confirmation": True,  # Set flag to indicate we're waiting for confirmation
-            "is_edit": False,  # This is not an edit operation
+            "is_edit": True,  # This is not an edit operation
             "diff_markup": ""  # No diff markup for new stories
         }
 
@@ -454,7 +454,7 @@ async def story_creator_node(state: AgentState, config: RunnableConfig):
             "story_content": story_content,
             "previous_story_content": story_content,  # Update the previous version to the current one
             "pending_confirmation": False,  # Reset the confirmation flag
-            "is_edit": False,  # No longer in edit mode
+            "is_edit": True,  # No longer in edit mode
             "diff_markup": ""  # Clear the diff markup
         }
 

@@ -183,35 +183,43 @@ export function StoryCreator() {
           </div>
 
           <div className="prose max-w-none">
-            {pending_confirmation && is_edit ? (
-              <div className="flex flex-wrap gap-1 text-gray-700 leading-relaxed">
-                {displayedWords.map((word, i) => {
-                  if (word.status === "mismatched") {
-                    return (
-                      <span key={i} className="flex items-center gap-1">
-                        <span className="line-through bg-red-200 px-1 rounded">
-                          {word.oldWord}
-                        </span>
-                        <span className="bg-green-200 px-1 rounded">{word.newWord}</span>
-                      </span>
-                    );
-                  } else if (word.status === "animating") {
-                    return (
-                      <span key={i} className="line-through bg-red-200 px-1 rounded">
-                        {word.oldWord}
-                      </span>
-                    );
-                  } else {
-                    return <span key={i}>{word.newWord} </span>;
-                  }
-                })}
-              </div>
-            ) : (
-              <div className="text-gray-700 leading-relaxed">
-                {story_content.story}
-              </div>
-            )}
-          </div>
+  {pending_confirmation && is_edit ? (
+    // 🔁 Animation view for edits
+    <div className="flex flex-wrap gap-1 text-gray-700 leading-relaxed">
+      {displayedWords.map((word, i) => {
+        if (word.status === "mismatched") {
+          return (
+            <span key={i} className="flex items-center gap-1">
+              <span className="line-through bg-red-200 px-1 rounded">
+                {word.oldWord}
+              </span>
+              <span className="bg-green-200 px-1 rounded">{word.newWord}</span>
+            </span>
+          );
+        } else if (word.status === "animating") {
+          return (
+            <span key={i} className="line-through bg-red-200 px-1 rounded">
+              {word.oldWord}
+            </span>
+          );
+        } else {
+          return <span key={i}>{word.newWord} </span>;
+        }
+      })}
+    </div>
+  ) : pending_confirmation && !is_edit ? (
+    <div className="text-gray-700 leading-relaxed">
+      {displayedWords.map((word, i) => (
+        <span key={i}>{word.newWord} </span>
+      ))}
+    </div>
+  ) : (
+    <div className="text-gray-700 leading-relaxed">
+      {storyCreatorAgentState?.previous_story_content?.story}
+    </div>
+  )}
+</div>
+
         </div>
       </div>
     );
