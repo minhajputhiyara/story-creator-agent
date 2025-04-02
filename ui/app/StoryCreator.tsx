@@ -161,21 +161,6 @@ export function StoryCreator() {
               className="w-full text-3xl font-bold bg-transparent border-none focus:outline-none mb-2"
               placeholder="Title"
             />
-            {pending_confirmation ? (
-              is_edit ? (
-                <div className="text-sm text-purple-600 font-medium px-3 py-1 bg-purple-100 rounded-full">
-                  Awaiting edit confirmation
-                </div>
-              ) : (
-                <div className="text-sm text-amber-600 font-medium px-3 py-1 bg-amber-100 rounded-full">
-                  Awaiting confirmation
-                </div>
-              )
-            ) : (
-              <div className="text-sm text-blue-600 font-medium px-3 py-1 bg-blue-100 rounded-full">
-                Final version
-              </div>
-            )}
           </div>
 
           <div className="text-sm text-gray-500">
